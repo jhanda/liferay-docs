@@ -1,5 +1,5 @@
 
-# Advanced Portal Operation  
+# Advanced Portal Operation [](id=advanced-portal-operation-liferay-portal-6-2-user-guide-18-en)
 
 In this chapter we discuss several advanced features of Liferay Portal,
 including audit trails and portal maintenance, backup, and logging. We also
@@ -27,11 +27,13 @@ We'll discuss the following topics in this section:
 
 -   Upgrading Liferay
 
+-   Using Web Services for Remote Portlets (WSRP)
+
 -   Remotely Accessing Liferay Services
 
 Let's get started with audit trails.
 
-## Audit Trails  
+## Audit Trails [](id=audit-trails-liferay-portal-6-2-user-guide-18-en)
 
 ![EE Only Feature](../../images/ee-feature-web.png)
 
@@ -86,56 +88,54 @@ We'll come back to Tom, Dick and Harry's story later in the chapter. For now,
 let's look at how to install Liferay's audit plugins so you can do the same
 thing Harry's about to do. 
 
-### Installing and configuring the audit plugins  
+### Installing and Configuring the Audit Plugins [](id=installing-and-configuring-the-audit-pl-liferay-portal-6-2-user-guide-18-en)
 
 Liferay's audit functionality is composed of two parts: a back-end piece that
 hooks into Liferay events and a front-end piece that gives you an interface to
-see what's happening. Both of these are available as EE-only plugins in the
-Customer Portal or Liferay Marketplace, and you'll need to install both to get
-audit functionality working (plugins installation is covered in chapter 13). 
+see what's happening. Both of these plugins are included in the Audit EE app
+which is available on Liferay Marketplace. Please refer to this guide's chapter
+on [Leveraging the Liferay
+Marketplace](https://www.liferay.com/documentation/liferay-portal/6.2/user-guide/-/ai/leveraging-the-liferay-marketplace-liferay-portal-6-2-user-guide-14-en)
+for information on installing plugins.
 
-Once installed, there are two properties in your `portal-ext.properties` file
-which you can use to tweak the settings. 
+Once installed, you can set two properties in your `portal-ext.properties` file
+to tweak the default settings. 
 
 **com.liferay.portal.servlet.filters.audit.AuditFilter:** By default, this is
 set to `false`, because the audit plugins aren't installed by default. When you
 set it to `true`, the audit hook is able to capture more information about
 events, such as the client host and the client's IP address. 
 
-**audit.message.com.liferay.portal.model.Layout.VIEW:** In the code, pages are
-*layouts*. Setting this to `true`, therefore, records audit events for page
-views. It's turned off by default because this may be too fine-grained for most
-installations. 
+**audit.message.com.liferay.portal.model.Layout.VIEW:** In Liferay's code, pages
+are referred to as *layouts*. Setting this to `true`, therefore, records audit
+events for page views. It's turned off by default because this may be too
+fine-grained for most installations. 
 
 Once you've decided if you're going to use one or both of the two settings
 above, place them in your `portal-ext.properties` file and restart your Liferay
 server. Once it comes up, audit events are captured by Liferay, and you'll be
 able to use them to see what's happening in your portal. 
 
-### Using audit events  
+### Using Audit Events [](id=using-audit-events-liferay-portal-6-2-user-guide-18-en)
 
 Now that you're capturing audit events, it's easy to use them to view activities
-in your portal. Navigate to the control panel and you'll find a new entry in the
-*Portal* section labeled *Audit Reports* (see figure 17.1). 
+in your portal. Navigate to the Control Panel and you'll find a new entry in the
+Configuration section called *Audit Reports* (see the figure below). 
 
-![Figure 18.1: Once the Audit Reports plugins are installed, an entry appears in
-the control panel.](../../images/control-panel-audit-reports.png)
+![Figure 18.1: Once the Audit EE app has been installed, an Audit Reports entry appears in the Control Panel.](../../images/control-panel-audit-reports.png)
 
-Clicking the entry shows you a list of the events Liferay has already captured
-(see figure 17.2), along with an interface for searching for events. You can
-browse the list if you want, but it's likely you'll need to use the search to
-find what you're looking for. 
+Clicking on *Audit Reports* shows you a list of the events Liferay has already
+captured (see the figure beblow), along with an interface for searching for
+events. You can browse the list but you'll likely need to use the search to find
+what you're looking for.
 
-![Figure 18.2: Liferay captures and stores events as soon as the audit plugins
-are installed.](../../images/audit-list-events.png)
+![Figure 18.2: Liferay captures and stores events as soon as the Audit EE app has been installed.](../../images/audit-list-events.png)
 
-Figure 17.2 shows Stephen Professor logged in and did some things on the site.
-To see the detail of any of these events, all you need to do is click one to see
-more information. You'll then see something like figure 17.3. 
+The figure above shows that Joe Bloggs logged in and performed some actions on
+the site. To view details about any of these events, all you need to do is click
+on an entry. You'll then see something like the figure below. 
 
-![Figure 18.3: Clicking an event in the list shows the details of that event.
-This event shows it must've been Stephen Professor's first time logging into the
-site, because he's accepting the terms of use.](../../images/audit-detail.png)
+![Figure 18.3: Clicking an event in the list shows the details of that event. This event shows that Joe Bloggs updated his user account. Specifically, it shows that he updated his `prefixId` from `0` to `11015`. The `prefixId` value represents a prefix for a real name like "Dr.", "Mr.", "Mrs.", or "Ms."](../../images/audit-detail.png)
 
 As you can see, depending on how many users you have in your portal, this list
 can get populated very quickly. For this reason, it's a good idea to keep the
@@ -143,20 +143,22 @@ can get populated very quickly. For this reason, it's a good idea to keep the
 This way, you don't clutter up your audit events with multiple page view events,
 which will definitely be the most often triggered event in your portal. 
 
-Now that you know how to browse and view audit events, let's look at searching
-for specific events. 
+Now that you know how to browse and view audit events, let's learn how to search
+for specific events.
 
-### Viewing audit reports  
+### Viewing Audit Reports [](id=viewing-audit-reports-liferay-portal-6-2-user-guide-18-en)
 
 Finding what you want in a big list of events is, to use the expression, like
-searching for a needle in a haystack. This is why the audit portlet gives you a
+searching for a needle in a haystack. This is why the audit portlet provides a
 robust searching mechanism. By default, it looks pretty simple: there's only a
-single field for searching. Clicking the *advanced* link, however, reveals a
-search dialog broken out by various fields you can use in your search. 
+single field for searching. Clicking the *gear* icon next to the search bar,
+however, reveals an advanced search dialog broken out by various fields you can
+use in your search. 
 
 Let's look at the options we have for search. 
 
-**Match:** You can match all fields you've specified or any single field. 
+**Match:** You can search for matches to *all* the fields you've specified or
+*any* single field. 
 
 **User ID:** Specify the user ID you'd like to search for. This would be the
 user who performed some action in the portal you'd like to audit. 
@@ -198,28 +200,26 @@ need this if you run a "vertical" cluster of multiple VMs on the same machine.
 Using this form, if you wanted to check to see if someone in the portal
 unassigned a user from a particular role, you might search for a resource name
 of *user* and a resource action of *unassign*. The results of such a search
-might look something like figure 17.4. 
+might look something like the figure below. 
 
-![Figure 18.4: Searching audit events is easy with the search form provided by
-the audit portlet. You can quickly drill down to find the types of events you're
-looking for.](../../images/audit-unassign-search.png)
+<!-- Need to wait for UI of the Audit Portlet EE to be updated for 6.2 before
+the screenshot below can be updated. -->
+
+![Figure 18.4: Searching for audit events is easy with the advanced search form provided by the audit portlet. You can specify various search criteria to find the types of events you're looking for.](../../images/audit-unassign-search.png)
 
 Once you have the results of your search, you can click on any of the records
-returned to see the detail page for that record. Figure 17.5 shows, in this
-particular case, the default administrative user removed Stephen Professor from
-the role of Power User. 
+returned to see the detail page for that record. The figure below shows, in this
+case, that the default administrative user removed the Power User role from Joe
+Bloggs.
 
-![Figure 18.5: If you've delegated portal administration to multiple users, you
-can use the audit plugins to determine who made what change. And, of course,
-you'll never leave the default administrative user enabled in a production
-system, right?](../../images/audit-unassign-detail.png)
+![Figure 18.5: If you've delegated portal administration to multiple users, you can use the audit plugins to determine who made what change. And, of course, you'll never leave the default administrative user enabled on a production system, right?](../../images/audit-unassign-detail.png)
 
 As you can see, Liferay's audit portlets give you a lot of power to see what's
 happening in your portal. You can use this information to troubleshoot problems,
 determine ownership of particular actions, or, as Harry is about to do, find out
 who made permission changes they weren't supposed to make. 
 
-### Conclusion of the Story  
+### Conclusion of the Story [](id=conclusion-of-the-story-liferay-portal-6-2-user-guide-18-en)
 
 "Okay," says Harry, "let's fire up Liferay's audit system and see if we can
 figure out what happened." 
@@ -262,7 +262,7 @@ better day than Melvin is.
 Now that we've seen how you can use audit trails, let's look at some tools and
 best practices for maintaining your Liferay installation.
 
-## Liferay monitoring using Google Analytics  
+## Liferay Monitoring using Google Analytics [](id=liferay-monitoring-using-google-analyti-liferay-portal-6-2-user-guide-18-en)
 
 Liferay includes built-in support for Google Analytics, allowing administrators
 to make use of Google's tool set for analyzing site traffic data. When you sign
@@ -279,28 +279,30 @@ for Liferay "out of the box."
 
 Because of this, support for Google Analytics has been built into Liferay, and
 can be turned on through a simple user interface. This allows Liferay
-administrators to make use of Google Analytics on a community by community basis
-and turn it on and off when needed.
+administrators to make use of Google Analytics on a site by site basis and turn
+it on and off when needed. You can sign up for Google Analytics at the Google
+Analytics site here:
+[http://www.google.com/analytics](http://www.google.com/analytics).
 
-To enable Google Analytics support, go to *Site Settings* in the control panel,
-and then select *Analytics* on the right. You'll see a very simple form,
-pictured below. 
+To enable Google Analytics support, navigate to *Site Administration* in the
+Control Panel, expand the *Configuration* area in menu at the left side of the
+screen, then click on *Site Settings*. Click on *Analytics* and you'll see a
+very simple form, pictured below. 
 
-![Figure 18.6: Setting up Google Analytics for your site is very easy: sign up
-for the ID and then enter it into this field.
+![Figure 18.6: Setting up Google Analytics for your site is very easy: sign up for Google Analytics, receive an ID, and then enter it into the Google Analytics ID field.
 ](../../images/maintaining-google-analytics.png)
 
-Put your Google Analytics ID (which should have been provided to you when you
+Enter your Google Analytics ID (which should have been provided to you when you
 signed up for the service) in the field and click *Save*. All the pages in the
-community you selected will now have the Google Analytics code in them and will
-be tracked. 
+site you selected will now have the Google Analytics code in them and will be
+tracked. 
 
 This is a fairly simple procedure, and it gives you the ability to take
 advantage of some great tools to help you visualize who's coming to your site
 and from where. Next, we discuss some topics germane to maintaining your Liferay
 installation as it's used. Let's start with backup.
 
-## Backing up a Liferay installation  
+## Backing up a Liferay Installation [](id=backing-up-a-liferay-installation-liferay-portal-6-2-user-guide-18-en)
 
 Once you have an installation of Liferay Portal running, you'll want to have
 proper backup procedures in place in case of a catastrophic hardware failure of
@@ -308,7 +310,7 @@ some kind. Liferay isn't very different from any other application that may be
 running on your application server. Nevertheless, there are some specific
 components you should include in your backup plan.
 
-### Backing up source code  
+### Backing up Source Code [](id=backing-up-source-code-liferay-portal-6-2-user-guide-18-en)
 
 If you have extended Liferay or have written any plugins, they should be stored
 in a source code repository such as Git, Subversion, or CVS, unless you're Linus
@@ -325,13 +327,15 @@ need to build your extension and deploy it to a server.
 
 Let's look at the items that need to be backed up in your Liferay installation. 
 
-### Backing up Liferay's file system  
+### Backing up Liferay's File System [](id=backing-up-liferays-file-system-liferay-portal-6-2-user-guide-18-en)
 
 Liferay's configuration file, `portal-ext.properties`, gets stored in the
 *Liferay Home* folder, which is generally one folder up from where your
-application server is installed (see chapter 14 for specific details for your
-application server). At a minimum, this file should be backed up, but it is
-generally best to back up your whole application server.
+application server is installed (see the [Installation and
+Setup](https://www.liferay.com/documentation/liferay-portal/6.2/user-guide/-/ai/installation-and-setup-liferay-portal-6-2-user-guide-15-en)
+chapter of this guide for specific details for your application server). At a
+minimum, this file should be backed up, but it is generally best to back up your
+whole application server.
 
 If you've followed the non-plugin procedure (see chapter 19) to modify your
 Ehcache configuration, you'll have cache configuration files in the deploy
@@ -341,17 +345,17 @@ settings are stored in your source code repository, which is backed up
 separately. 
 
 Liferay stores configuration files, search indexes, and cache information in a
-folder called `data` in Liferay Home. If you're using the File System store or
+folder called `/data` in Liferay Home. If you're using the File System store or
 the Advanced File System store, the media repository is stored here (by default)
 too. You should always back up the contents of your Liferay Home folder.
 
 If you've modified the location where the Document Library stores files, you
 should also back up this location.
 
-That about covers the file system locations Liferay uses. Next, let's discuss
-how to back up Liferay's database.
+That covers the file system locations Liferay uses. Next, let's discuss how to
+back up Liferay's database.
 
-### Backing up Liferay's database  
+### Backing up Liferay's Database [](id=backing-up-liferays-database-liferay-portal-6-2-user-guide-18-en)
 
 Liferay's database is the central repository for all of the Portal's information
 and is the most important component that needs to be backed up. You can do this
@@ -384,7 +388,7 @@ hardware failure.
 But what about maintenance while your server is running? Liferay lets you view a
 lot of what is going on through its logging system. 
 
-## Liferay's Logging System  
+## Liferay's Logging System [](id=liferays-logging-system-liferay-portal-6-2-user-guide-18-en)
 
 Liferay uses Log4j extensively to implement logging for nearly every class in
 the portal. If you need to debug something specific while the system is running,
@@ -411,8 +415,7 @@ place higher up in the hierarchy and select the package name instead of an
 individual class name. If you do this, messages for every class lower in the
 hierarchy will be displayed in your application server's log file.
 
-![Figure 18.7: Log levels can be dynamically changed at runtime, whenever you
-need to debug an issue. ](../../images/maintaining-log-levels.png) 
+![Figure 18.7: Log levels can be dynamically changed at runtime whenever you need to debug an issue. ](../../images/maintaining-log-levels.png) 
 
 Be careful when you do this. If you set the log level to DEBUG somewhere near
 the top of the hierarchy (such as `com.liferay`, for example), you may wind up
@@ -437,8 +440,7 @@ the various logging levels:
 To enable your logging messages to appear in your server's log file via the
 control panel, click the *Add Category* tab on the same *Log Levels* page.
 
-![Figure 18.8: Adding your own logging classes is as simple as specifying it in
-this field.](../../images/maintaining-add-log-category.png) 
+![Figure 18.8: Adding your own logging classes is easy. To add a logging class, just specify it in this field.](../../images/maintaining-add-log-category.png) 
 
 You'll see you can add a logging category. Put in the fully qualified name of
 your class or of the package that contains the classes whose log messages you
@@ -450,7 +452,7 @@ Logs are great for figuring out issues in production. But what if Liferay
 contacts you via its support channel with a bug fix or a security enhancement?
 Read on to learn how to patch Liferay. 
 
-## Patching Liferay  
+## Patching Liferay [](id=patching-liferay-liferay-portal-6-2-user-guide-18-en)
 
 ![EE Only Feature](../../images/ee-feature-web.png)
 
@@ -476,7 +478,7 @@ always going to want to patch.
 
 Now that you know what patching is all about, let's check out the tool. 
 
-### Installing the patching tool  
+### Installing the patching tool [](id=installing-the-patching-tool-liferay-portal-6-2-user-guide-18-en)
 
 If you're using a Liferay bundle, congratulations! The patching tool is already
 installed. Your job isn't done yet, however, because Liferay *might* have
@@ -527,7 +529,7 @@ you'd issue this command:
 In all, this is pretty simple. Now let's see how to use the patching tool to get
 your patches installed. 
 
-### Installing patches  
+### Installing patches [](id=installing-patches-liferay-portal-6-2-user-guide-18-en)
 
 The absolute first thing you must do when installing one or more patches is to
 shut down your server. On Windows operating systems, files that are in use are
@@ -542,19 +544,42 @@ downloading a fix pack from the customer portal, you'll need to place it in the
 `patches` folder, which is inside the patching tool's home folder. Once you've
 done that, it's a simple matter to install it. First, execute
 
-	./patching-tool.sh info
+    ./patching-tool.sh info
 	
 This shows you a list of patches you've already installed, along with a list of
 patches that *can* be installed, from what's in the `patches` folder. To install
 the available patches, issue the following command: 
 
-	./patching-tool.sh install
-	
-Your patches are now installed. You can verify this by using the
-`./patching-tool.sh info` command, which now shows your patch in the list of
-installed patches. Let's look now at how you'd manage your patches. 
+    ./patching-tool.sh install
 
-#### Handling hot fixes and patches  
+Liferay copies files into the plugins in deployment time. If these files are
+patched in the portal, they need to be updated in the plugins as well. In these
+cases, the patching tool notifies you about the change. You can run the
+following command to update these files automatically:
+
+    ./patching-tool.sh update-plugins
+
+If you do not wish to have the patching tool update the plugins, it's enough to
+re-deploy them. If there are new indexes created by the patch, the patching tool
+notifies you to update them. To get the list, run this command:
+
+    ./patching-tool.sh index-info
+
+As there's no database connection at patching time, the patches needed to be
+created at portal startup. In order to get the indexes automatically created,
+add the following line to the `portal-ext.properties` file if the server has
+permissions to modify the indexes on the database:
+
+    database.indexes.update.on.startup=true
+
+Otherwise, you have to create the indexes manually. Check the output of the
+`./patching-tool index-info` command for more details.
+
+Once your patches have been installed, you can verify them by using the
+`./patching-tool.sh info` command, which now shows your patch in the list of
+installed patches. Next, let's look now at how to manage your patches. 
+
+#### Handling hot fixes and patches [](id=handling-hot-fixes-and-patches-liferay-portal-6-2-user-guide-18-en)
 
 As stated above, hot fixes are short term fixes provided as quickly as possible
 and fix packs are larger bundles of hot fixes provided to all customers at
@@ -569,7 +594,7 @@ If a new version of a fix pack is released, you can use the patching tool to
 install it. The patching tool uninstalls the old fix pack and installs the new
 version in its place. 
 
-#### Fix pack dependencies  
+#### Fix pack dependencies [](id=fix-pack-dependencies-liferay-portal-6-2-user-guide-18-en)
 
 Some fix packs require other fix packs to be installed first. If you attempt to
 install a fix pack that depends on another fix pack, the patching tool will
@@ -579,7 +604,7 @@ folder, the patching tool will install them.
 
 The patching tool can also remove patches. 
 
-### Removing or reverting patches  
+### Removing or reverting patches [](id=removing-or-reverting-patches-liferay-portal-6-2-user-guide-18-en)
 
 Have you noticed that the patching tool only seems to have an `install` command?
 This is because patches are managed not by the command, but by what appears in
@@ -595,7 +620,7 @@ What we've described so far is the simplest way to use the patching tool, but
 you can also use the patching tool in the most complex, multi-VM, clustered
 environments. This is done by using profiles. 
 
-### Using profiles with the patching tool  
+### Using profiles with the patching tool [](id=using-profiles-with-the-patching-tool-liferay-portal-6-2-user-guide-18-en)
 
 When you ran the auto-discovery task after installing the patching tool, it
 created a default profile that points to the application server it discovered.
@@ -654,7 +679,7 @@ patch all of them. This helps to keep all your installations in sync.
 Now that you know how to patch an existing installation of Liferay, let's turn
 to how you'd upgrade Liferay from an older release to the current release. 
 
-## Upgrading Liferay  
+## Upgrading Liferay [](id=upgrading-liferay-liferay-portal-6-2-user-guide-18-en)
 
 Liferay upgrades are fairly straightforward. A consistent set of steps is all
 you need to follow to upgrade a standard Liferay installation. Things do get
@@ -669,46 +694,82 @@ however, this is not a guarantee everything will work without modification. Ext
 plugins are the most complicating factor in an upgrade, so it is important to
 test as much as possible.
 
-As a general rule, you can upgrade from one major release to the next major
-release. For example, you can upgrade directly from Liferay 5.2.x to 6.0.x, but
-not from 5.2.x to 6.1.x. If you need to upgrade over several major releases,
-you'll need to run the upgrade procedure for each major release until you reach
-the release you want. This doesn't mean you need to run the procedure for every
-point release or service pack; you only need to run the procedure for the major
-releases. A good practice is to use the latest version of each major release to
-upgrade your system. 
+Prior to Liferay 6.1 SP2, you could upgrade only from one major release to the
+next major release. For example, you could upgrade directly from Liferay 5.2.x
+to 6.0.x, but not from 5.1.x to 6.0.x. If you needed to upgrade over several
+major releases, you needed to run the upgrade procedure for each major release
+until you reached the release you want. This doesn't mean you needed to run the
+procedure for every point release or service pack; you only needed to run the
+procedure for the major releases. A good practice was to use the latest version
+of each major release to upgrade your system. 
 
-Now that we've gotten the general philosophy of upgrading out of the way, let's
-outline the procedure you'll undergo for upgrading a Liferay 6.0 installation to
-a 6.1 installation. If you're running a previous version of Liferay and need to
-upgrade to 6.0 first, please see the instructions in the previous version of
-this document. 
+Liferay introduced the *seamless upgrade* feature with Liferay 6.1. Seamless
+upgrades allow Liferay to be upgraded more easily. In most cases, pointing the
+latest version of Liferay to the database of the older version is enough. Of
+course, before upgrading, you should test the upgrade in a non-production
+environment. You should also always back up your database and other important
+information and make all the other appropriate preparations that we'll discuss
+in the section.
 
-### Preparing for an Upgrade
+Now that we've discussed the general philosophy of upgrading, let's outline the
+procedure for upgrading to Liferay 6.2.
 
-You should make a few preparations before performing an upgrade. Specifically,
-you should make sure you've migrated to permission algorithm 6, reviewed your
-image gallery usage, reviewed the defaults of the new version of Liferay, and
-cataloged all the plugins you have installed. After you've performed these
-tasks, you're ready to upgrade. Let's look at them one by one. 
+### Preparing for an Upgrade [](id=preparing-for-an-upgrade-liferay-portal-6-2-user-guide-18-en)
 
-### Migrate to Algorithm 6  
+The first thing you need to do is size up your situation. You can do this by
+asking yourself a few questions from the chart below. First: What version of
+Liferay was the first version you installed? If it was 6.0 or 6.1, there are
+fewer steps, because you won't have to worry about migrating your permission
+algorithm. If, however, you never upgraded to permissions algorithm 6 or you're
+still running a 5.x Liferay, you need to migrate to algorithm 6 before
+attempting to upgrade to Liferay 6.2. 
 
-If your Liferay installation has existed for a while, you may be on a different
-permission algorithm than the one that's available in Liferay Portal 6.1.
-Permission algorithms 1-5 were deprecated in Liferay Portal 6.0, and they've now
-been removed in 6.1, which means you must migrate *before* you upgrade. 
+Next, if you're upgrading from a version of Liferay older than 6.1, you'll have
+to migrate your image gallery over to Documents and Media. Finally, take note of
+all the plugins you have installed. Every plugin must be updated to run on the
+current release. This is easy to do with Marketplace: after you bring up
+Liferay 6.2, install from Marketplace any of the plugins you had installed
+previously. For custom plugins, have your development team update them to run on
+the new version of Liferay. 
 
-If you're on Liferay 5.2 or below, you need to upgrade to the latest available
+![Figure 18.9: Use this flowchart to determine the steps to take for your upgrade.](../../images/upgrade-decisions.png)
+
+The flowchart illustrates the procedure described above. Use it to determine
+your course of action for the upgrade. Each step is described fully below so
+that you can perform your upgrade as efficiently as possible. Be sure to test
+the upgrade in a non-production environment before upgrading your production
+Liferay instance. Let's look at the preparatory tasks you should perform one by
+one. 
+
+### Migrate to Algorithm 6 [](id=migrate-to-algorithm-6-liferay-portal-6-2-user-guide-18-en)
+
+If your Liferay installation has existed for a while, you might be on a
+different permission algorithm than the one that's available in Liferay Portal
+6.1. Permission algorithms 1-5 were deprecated in Liferay Portal 6.0 and
+were removed in 6.1, which means you must migrate *before* you upgrade.
+
+---
+
+ ![Tip](../../images/tip.png) **Important**: Before upgrading a Liferay instance
+ that's using one of permissions algorithms 1-5, you *must* migrate to
+ permissions algorithm 6 before attempting to upgrade to Liferay 6.2. You can't
+ use the seamless upgrade feature to upgrade directly to 6.2 because Liferay's
+ permissions migration tool is not included with Liferay 6.2. Follow the
+ instructions in this section to migrate to permissions algorithm 6 before
+ continuing with your upgrade.
+
+---
+
+If you're on Liferay 5.2 or below, you must upgrade to the latest available
 release of Liferay 6.0 first. Please follow the instructions in the [*Liferay
-Portal Administrator's
-Guide*](https://www.liferay.com/documentation/liferay-portal/6.0/administration/-/ai/upgrading-lifer-4)
-to do this. We will assume for the rest of this section that you have 6.0
-running, and that it's configured to use an older algorithm than algorithm 6. 
+Portal Administrator's Guide*](https://www.liferay.com/documentation/liferay-portal/6.0/administration/-/ai/upgrading-lifer-4)
+to do this. We will assume for the rest of this section that you have upgraded
+to Liferay 6.0 but that's it's configured to use an older algorithm than
+algorithm 6. 
 
 The first thing you need to do, if this is not done already, is to upgrade your
-installation to algorithm 5. If you've already done that, great! You can skip
-the rest of this paragraph. If not, shut down your server, edit your
+Liferay installation to algorithm 5. If you've already done that, great! You can
+skip the rest of this paragraph. If not, shut down your server, edit your
 `portal-ext.properties` file, and modify/add the following property so that it
 reads like this: 
 
@@ -718,13 +779,12 @@ Restart your server. As Liferay starts, it upgrades your permissions algorithm
 to algorithm 5. Review your system to make sure that your permissions
 configuration is working properly (it should be). 
 
-Next, log in as an Administrator and navigate to the Control Panel. Go to *Server
-Administration* and select *Data Migration* from the menu along the top of the
-screen. A section entitled *Legacy Permissions Migration* appears at the
+Next, log in as an administrator and navigate to the Control Panel. Go to
+*Server Administration* and select *Data Migration* from the menu along the top
+of the screen. A section entitled *Legacy Permissions Migration* appears at the
 bottom of the page.
 
-![Figure 18.9: Update your permissions algorithm by clicking the *Execute*
-button.](../../images/17-convert-permissions-algorithm.png)
+![Figure 18.10: Update your permissions algorithm by clicking the *Execute* button.](../../images/17-convert-permissions-algorithm.png)
 
 Algorithms 5 and 6 do not support adding permissions at the user level. If you
 have permissions set for individual users, the converter can simulate this for
@@ -743,15 +803,15 @@ and modify the algorithm property to show that you're now using algorithm 6:
 
 Restart your server. Congratulations! You've successfully migrated your
 installation to use the latest, highest performing permissions algorithm. Next,
-you'll need to explicitly set your Image Gallery storage option. 
+might need to explicitly set your Image Gallery storage option. 
 
-### Migrate Your Image Gallery Images  
+### Migrate Your Image Gallery Images [](id=migrate-your-image-gallery-images-liferay-portal-6-2-user-guide-18-en)
 
-Liferay 6.1 introduces a major change to how Liferay handles files. No longer do
-we have a separate Document Library and Image Gallery; instead, these have been
-combined into Documents and Media. If you were using Liferay's Image Gallery to
-store images, these can be migrated over during an upgrade, but you'll have to
-take some extra steps first. 
+Liferay 6.1 introduced a major change to how Liferay handles files. Liferay 6.0
+and previous versions had a separate Document Library and Image Gallery. In
+Liferay 6.1 and 6.2, these are combined into the Documents and Media repository.
+If you were using Liferay's Image Gallery to store images, these can be migrated
+over during an upgrade, but you'll have to take some extra steps first. 
 
 In Liferay 6.0, you had three ways you could store images in the Image Gallery.
 You could use the `DatabaseHook` and store them as BLOBs in the database; you
@@ -775,41 +835,121 @@ likely already in your `portal-ext.properties` file.
 The third thing you need to do to prepare for your upgrade is to review the new
 property defaults. 
 
-### Review the New 6.1 Properties Defaults  
+### Review the Liferay 6.2 Properties Defaults [](id=review-the-new-6-1-properties-defaults-liferay-portal-6-2-user-guide-18-en)
 
-The next thing you'll need to look at are the defaults that have changed from
-6.0 to 6.1. These are preserved in `portal-legacy-6.0.properties` in the source.
-The 6.0 values are:
+The next thing you'll need to look at are the defaults that have changed between
+your old Liferay instance's version and Liferay 6.2. These are preserved in a
+`portal-legacy-[version].properties` file in Liferay's `/WEB-INF/classes` folder
+and in the `portal-impl/src` folder of Liferay's source code. For example, here
+are some 6.1 legacy properties:
 
-    users.last.name.required=true
-    layout.types=portlet,panel,embedded,article,url,link_to_layout
-    editor.wysiwyg.portal-web.docroot.html.portlet.message_boards.edit_message.bb_code.jsp=bbcode
-    setup.wizard.enabled=false discussion.subscribe.by.default=false
-    message.boards.subscribe.by.default=false
+    hibernate.cache.use_query_cache=true
+    hibernate.cache.use_second_level_cache=true
+    locale.prepend.friendly.url.style=1
+    passwords.encryption.algorithm.legacy=SHA
+    mobile.device.styling.wap.enabled=true
+    journal.articles.search.with.index=false
 
-The 6.1 values have changed to: 
+The `passwords.encryption.algorithm.legacy` and
+`mobile.device.styling.wap.enabled` properties do not exist in 6.1. In 6.2, the
+default values of some properties have changed and some new properties have been
+added: 
 
-    users.last.name.required=false
-    layout.types=portlet,panel,embedded,url,link_to_layout
-    editor.wysiwyg.portal-web.docroot.html.portlet.message_boards.edit_message.bb_code.jsp=ckeditor_bbcode
-    setup.wizard.enabled=true discussion.subscribe.by.default=true
-    message.boards.subscribe.by.default=true
- 
-If you don't like the defaults, you can change them back in one shot by adding a
-system property to your JVM's startup. This differs by application servers. In
-Tomcat, you'd modify `setenv.sh`/`setenv.bat` and append the option
-`-Dexternal-properties=portal-legacy-6.0.properties` to the environment variable
-JAVA_OPTS. The scripts `setenv.sh` or `setenv.bat` are not delivered with
-default Tomcat, but do exist in the bundles. If they're there, Tomcat uses them
-in the startup process, so it's a nice way to separate your own settings from
-Tomcat's default shell scripts. Alternatively, of course, you can override some
-or all of them in your `portal-ext.properties` along with your other overrides.
+    hibernate.cache.use_query_cache=false
+    hibernate.cache.use_second_level_cache=false
+    locale.prepend.friendly.url.style=3
+    passwords.encryption.algorithm.legacy=
+    mobile.device.styling.wap.enabled=false
+    journal.articles.search.with.index=true
+
+Please refer to the 6.1 and 6.2 versions of Liferay's `portal.properties` file
+for explanations of each of these properties. This file can be found in the your
+Liferay instance's `/WEB-INF/lib/portal-impl.jar` file. Online versions can also
+be found at
+[http://docs.liferay.com/portal/6.1/propertiesdoc/portal.properties.html](http://docs.liferay.com/portal/6.1/propertiesdoc/portal.properties.html)
+and
+[http://docs.liferay.com/portal/6.2/propertiesdoc/portal.properties.html](http://docs.liferay.com/portal/6.2/propertiesdoc/portal.properties.html).
+Please also note the following changes in behavior:
+
+1. By default, Liferay 6.1 used the DES encryption algorithm with a 56 bit key
+   size for the company level encryption algorithm.
+   
+        company.encryption.algorithm=DES
+        company.encryption.key.size=56
+   
+    By default, Liferay 6.2 uses the much stronger AES encryption algorithm with
+    a 128 bit key size for the company level encryption algorithm. AES-128 is
+    believed to be secure, is fast, and is a standard for symmetric key
+    encryption. 
+   
+        company.encryption.algorithm=AES
+        company.encryption.key.size=128
+   
+    However, the upgrade for the `company.encryption.algorithm` property is only
+    performed if the value for this properties was not customized, i.e., if it
+    was still set to DES. The upgrade doesn't make any changes if a different
+    algorithm was explicitly selected. (Note that this does not affect password
+    encryption which a different property handles:
+    `passwords.encryption.algorithm`.)
+
+2. By default, Liferay 6.1 used the SHA algorithm for password encryption.
+
+        passwords.encryption.algorithm=SHA
+
+    By default, Liferay 6.2 uses a stronger algorithm,
+    PBKDF2WithHmacSHA1/160/128000, for password encryption. PBKDF2
+    (Password-Based Key Derivation Function 2) is a key derivation function
+    that's part of RSA's PKCS (Public-Key Cryptography Standards) series: PKCS
+    \#5, version 2.0. It's also described in the IETF's [RFC
+    2898](http://tools.ietf.org/html/rfc2898). The
+    `PBKDF2WithHmacSHA1/160/128000` algorithm uses a keyed-hash message
+    authentication code using SHA-1 and generates 160-bit hashes using 128,000
+    rounds. One round is a single iteration of the key derivation function.
+        
+        passwords.encryption.algorithm=PBKDF2WithHmacSHA1/160/128000
+
+    Performance is affected by password encryption during sign-in and password
+    changes. In 2012, [OWASP](http://www.owasp.org), the Open Web Application
+    Security Project, recommended to use 64,000 rounds and to double the number
+    of rounds each year. If using PBKDF2 with 128,000 rounds is too expensive
+    for the hardware on which you're running Liferay, you can downgrade your
+    security algorithm to improve performance by choosing a smaller number. For
+    example, you set the following:
+
+        passwords.encryption.algorithm=PBKDF2WithHmacSHA1/160/64000
+
+    If you'd like your upgrade to migrate your password encryption algorithm,
+    you need to specify the legacy password encryption algorithm from which
+    you're migrating. For example, if you were using the 6.1 default before your
+    upgrade, you'd set the following property:
+
+        passwords.encryption.algorithm.legacy=SHA
+
+    Set this property before performing an upgrade so that both existing users'
+    and new users' passwords are re-encrypted with the new algorithm.
+
+3. After upgrading from Liferay 6.1 to Liferay 6.2, users must sign back in to
+   the portal even if they were using the *Remember Me* feature of the Sign In
+   portlet. After the upgrade, the *Remember Me* feature works correctly: users
+   can log in to the portal, close their browser, open a new browser window,
+   navigate to the portal, and still be logged in.
+
+If you don't like the 6.2 default properties, you can change them back in one
+shot by adding a system property to your JVM's startup. This differs by
+application servers. In Tomcat, you'd modify `setenv.sh`/`setenv.bat` and append
+the option `-Dexternal-properties=portal-legacy-[version].properties` to the
+environment variable JAVA_OPTS. The scripts `setenv.sh` or `setenv.bat` are not
+delivered with default Tomcat, but do exist in the bundles. If they're there,
+Tomcat uses them in the startup process, so it's a nice way to separate your own
+settings from Tomcat's default shell scripts. Alternatively, of course, you can
+override some or all of them in your `portal-ext.properties` along with your
+other overrides.
 
 If you're not using Tomcat, check your application server's documentation to see
 how to modify runtime properties. Your final task is to catalog all the plugins
 you have installed, so you can install the new versions in your upgraded system. 
 
-### Catalog all the plugins you have installed  
+### Catalog All Installed Plugins [](id=catalog-all-installed-plugins-liferay-portal-6-2-user-guide-18-en)
 
 Finally, you need to take note of any plugins you have installed. Liferay's
 plugins are usually version-specific, so you'll need to obtain new versions of
@@ -818,25 +958,35 @@ development team, they'll need to build, test, and optionally modify them to
 work with the new release of Liferay. Don't attempt an upgrade without
 collecting all the plugins you'll need first. 
 
+For Liferay 6.2, the Web Content List portlet is deprecated. During the
+deprecation period, the code will still be part of the product, but will be
+disabled by default. To enable Web Content List, you'll need to modify the
+`liferay-portlet.xml` file by setting the `<include>false</include>` tag to
+`true`. However, all the functionality of this portlet is provided by the Asset
+Publisher portlet. The Web Content List portlet is expected to be removed in the
+next release.
+
 Once you've upgraded your permissions algorithm, reviewed your properties, and
 collected all the plugins you'll need, you're ready to follow the upgrade
 procedure. Remember to back up your system before you begin. 
 
+### Upgrade Choices: Upgrade a Bundle or Upgrade Manually [](id=upgrade-choices-upgrade-a-bundle-or-upg-liferay-portal-6-2-user-guide-18-en)
+
 There are two different procedures to upgrade Liferay. The first one, upgrading
-a Liferay bundle, is the most common. The second procedure is for upgrading a
-Liferay installation on an application server. We'll go over both.
+a Liferay bundle, is the most common. The second procedure is for manually
+upgrading a Liferay installation on an application server. We'll discuss both.
 
 In both cases, Liferay auto-detects whether the database requires an upgrade the
 first time the new version is started. When Liferay does this, it upgrades the
 database to the format required by the new version. To perform this task,
-Liferay *must* be accessing the database with an ID that can create, drop and
-modify tables. Make sure you have granted these permissions to the ID before you
-attempt to upgrade Liferay. And, of course, we'll run the risk of overly
-repeating ourselves: back up your database. 
+Liferay *must* be accessing the database with a database user account that can
+create, drop and modify tables. Make sure you have granted these permissions to
+the database user account before you attempt to upgrade Liferay. And, of course,
+we'll run the risk of overly repeating ourselves: back up your database.
 
 Let's look at upgrading a bundle, which is the easiest upgrade path. 
 
-#### Upgrading a bundle  
+#### Upgrading a Bundle [](id=upgrading-a-bundle-liferay-portal-6-2-user-guide-18-en)
 
 If you're running a Liferay bundle, the best way to do the upgrade is to follow
 the steps below. The new Liferay is installed in a newer version of your bundle
@@ -879,7 +1029,7 @@ versions are mandated by the environment you're in or by management. For this
 reason, Liferay also ships as an installable .war file that can be used on any
 supported application server.    
 
-#### Upgrading using a .war file  
+#### Upgrading Manually [](id=upgrading-using-a--war-file-liferay-portal-6-2-user-guide-18-en)
 
 Running a manual upgrade is almost as easy as upgrading a bundle: 
 
@@ -909,7 +1059,7 @@ Running a manual upgrade is almost as easy as upgrading a bundle:
       the .war, restart) your application server. Watch the console as Liferay
       starts: it should upgrade the database automatically. Verify your portal
       is operating normally, and then install any plugins you were using in your
-      old version of Liferay. Make sure you use the versions of theose plugins
+      old version of Liferay. Make sure you use the versions of those plugins
       designed for Liferay 6.1. If you have your own plugins, your development
       team will need to migrate the code in these ahead of time and provide .war
       files to you. 
@@ -921,55 +1071,186 @@ That's all there is to it. Most everything is handled by Liferay's upgrade
 procedure. Note as stated above, if you have to upgrade over several Liferay
 versions, you will need to repeat these steps for each major release. 
 
-### Upgrading from Liferay 6.1 to Liferay 6.2
+### Post-Upgrade Tasks [](id=post-upgrade-tasks-liferay-portal-6-2-user-guide-18-en)
 
-If you're upgrading from Liferay 6.1 to Liferay 6.2, please note the following
-changes in behavior.
+After upgrading to Liferay 6.2, you should reindex your portal's search indexes.
+Liferay 6.2 indexes new information in many places, including Documents and
+Media, Web Content, and Bookmarks. To reindex all search indexes, navigate to
+the *Control Panel* &rarr; *Server Administration* and click on *Reindex all
+search indexes*. This invokes each of your portal's indexer classes, ensuring
+that your search indexes contain the updated data that 6.2 indexes. 
 
-1. By default, Liferay 6.1 used the DES encryption algorithm with a 56 bit key
-   size for the company level encryption algorithm.
-   
-        company.encryption.algorithm=DES
-        company.encryption.key.size=56
-   
-   By default, Liferay 6.2 uses the much stronger AES encryption algorithm with
-   a 128 bit key size for the company level encryption algorithm.
-   
-        company.encryption.algorithm=AES
-        company.encryption.key.size=128
-   
-   However, the upgrade for the `company.encryption.algorithm` property is only
-   performed if the value for this properties was not customized, i.e., if it
-   was still set to DES. The upgrade doesn't make any changes if a different
-   algorithm was explicitly selected. (Note that this does not affect password
-   encryption which is handled via a different property:
-   `passwords.encryption.algorithm`.)
+Liferay Portal can serve portlets that are installed on the system, or it can
+serve portlets installed on another portal server. This is called Web Services
+for Remote Portlets. Have you ever wondered how to use WSRP in Liferay? We'll
+cover this next!
 
-2. After upgrading from Liferay 6.1 to Liferay 6.2, users will have to sign back
-   in to the portal even if they were using the *Remember Me* feature of the
-   Sign In portlet. After the upgrade, the *Remember Me* feature works
-   correctly: users can log in to the portal, close their browser, open a new
-   browser window, navigate to the portal, and still be logged in.
+## Using Web Services for Remote Portlets (WSRP) [](id=using-web-services-for-remote-portlets--liferay-portal-6-2-user-guide-18-en)
 
-## Remotely Accessing Liferay Services
+The Web Services for Remote Portlets (WSRP) specification defines a web service
+interface for accessing and interacting with presentation-oriented web services
+in the form of portlets. What are presentation-oriented web services? These are
+web services that send user interfaces over the wire, rather than raw data like
+JSON objects or SOAP data envelopes. If an application is written as a portlet,
+this is an easy way to expose that application to end users on a completely
+different system, rather than sending just the data and having to craft an
+application to present that data. WSRP's presentation-oriented web services 
+allow portals to display remote portlets inside their pages, as if locally
+deployed, without requiring any additional programming by developers.
+
+Here are the two main components for WSRP:
+
+*Producer:* A web service that exposes one or more portlets and is described
+using a Web Services Description Language (WSDL) document.
+
+*Consumer:* A web service client that receives the data from the Producer and
+presents it to the user in a portlet window. 
+
+Below, you'll see how the components interact with each other. So without
+further ado, let's explore WSRP in Liferay!
+
+### WSRP with Liferay [](id=wsrp-with-liferay-liferay-portal-6-2-user-guide-18-en)
+
+Liferay provides a deployable WSRP portlet that supports the 1.0 and 2.0
+specifications. The portlet is available from Liferay Marketplace as a CE or EE
+app. Once you've downloaded and installed the WSRP app, you have instant access
+to the portlet by navigating to the Control Panel and, under *Apps*, selecting
+*WSRP*.
+
+Liferay Portal can be used as a WSRP producer or consumer. As a producer, it
+hosts portlets that are consumed by other portal servers (Liferay or
+non-Liferay) acting as WSRP consumers. The image below illustrates WSRP
+producers and consumers and how they interact.
+
+![Figure 18.11: Portlets can interact with other portlets located on a different portal server using WSRP.](../../images/wsrp-illustration.png)
+
+As we mentioned in the previous chapter, there are two main components of the
+WSRP process: producers and consumers. Let's go through the basic process of how
+producers and consumers work together to bring the end user a remote portlet.
+First, the consumer portal server establishes a connection with its producer
+portal server counterpart. This connection is made possible by giving the
+consumer the producer portlet's URL. The consumer then uses the URL to
+discover the producer's portlet and establish a connection. After the connection
+is made, the consumer acquires the producer's information and creates a consumer
+proxy portlet. The proxy portlet acts as an intermediary, relaying requests to
+and from the end user and the producer portlet.
+
+For example, you can compare the proxy portlet to a TV satellite box. If you
+want to change the channel on your TV, you (end user) send the channel number
+you desire to the TV's satellite box (consumer's proxy portlet) via your TV's
+remote. When the satellite box receives the request to change the channel, it
+relays the request to a TV satellite (producer's portlet) which then sends the
+channel information back to the satellite box. Then, the satellite box displays
+the new channel to you on your TV. In this simple example, you're not directly
+requesting the TV satellite to change the channel, but rather, you're
+communicating with the satellite box, which acts as an intermediary between you
+and the satellite. This example directly relates to using WSRP with Liferay.
+Although the end users are sending requests to the consumer portlet, they're not
+receiving feedback from the consumer portlet itself, but rather its producer
+portlet located remotely.
+
+Now that you know a little bit about the WSRP process, let's begin configuring
+WSRP on Liferay Portal. For this demonstration, we'll assume you have two portal
+servers.
+
+---
+
+ ![Tip](../../images/tip.png) **Tip**: If you're following along with this
+ example and don't have an additional portal server, you can download another
+ instance of Liferay Portal and have it running at the same time as your current
+ Liferay instance to simulate an additional portal server. Remember, typical use
+ cases have WSRP producers and consumers linked on differing portal servers. To
+ run two portal instances locally at the same time, you'll need to change one of
+ your portal's server configurations. Navigate to one of your portal's
+ `tomcat-[VERSION]\conf\server.xml` and change the `port=` designations to
+ different values (e.g., change `8080` to `18080`). Also, you can specify the
+ new port number for your browser launcher URL by adding
+ `browser.launcher.url=http://localhost:18080` to your portal's
+ `portal-ext.properties` file.
+
+---
+
+To create a producer, go to the *Producers* tab and click *Add Producer*. Give
+your producer a name and choose the appropriate version of WSRP to use. Liferay
+displays a list of available portlets your producer can use. For demonstration
+purposes, select the Hello World portlet and click the *Save* button. The portal
+generates a WSDL document to define your producer. To view the WSDL document,
+click the URL link provided.
+
+![Figure 18.12: You can view the WSDL document for your producer by clicking the provided URL.](../../images/wsdl-url.png)
+
+Now that we've created a producer, let's create a consumer on your second portal
+server. 
+
+On your consumer portal server, navigate to the Consumers tab and select the
+*Add Consumer* button. Give it a name and add the producer's WSDL URL in the
+*URL* field. There are also additional fields:
+
+*Forward Cookies:* Allows the WSRP consumer to forward specific cookies from
+the user's browser session to the WSRP producer.
+
+*Forward Headers:* Allows the WSRP consumer to forward specific HTTP headers
+from the user's browser session to the WSRP producer.
+
+*Markup Character Sets:* Markup character encodings supported for the consumer
+are shown in a comma delimited list. UTF-8 is assumed and will be added
+automatically as a supported encoding.
+
+Leave these additional fields blank for our demonstration. Lastly, we need to
+define the portlets that the end-user can use from this consumer. To do this, go
+to *Actions* &rarr; *Manage Portlets* for your consumer. Add the remote portlets
+that you've configured for your producer portal server. In this case, select the
+*Hello World* remote portlet and give the new portlet an arbitrary name. Now end
+users can "consume" or use the remote portlet just like any local portlet in the
+portal.
+
+Next, you'll learn how to create custom remote portlets.
+
+### Creating Custom Remote Portlets [](id=creating-custom-remote-portlets-liferay-portal-6-2-user-guide-18-en)
+
+With the demand for dynamic portlets by end users, sometimes a finite,
+pre-selected list of remote portlets isn't enough. Because of this, Liferay
+allows you to make custom developed portlets remotely accessible for WSRP.
+
+To enable your custom portlet for WSRP, you'll need to add the
+`<remoteable>true</remoteable>` tag in your portlet's
+`docroot/WEB-INF/liferay-portlet.xml` file:
+
+	<liferay-portlet-app>
+		<portlet>
+			<portlet-name>RemoteSamplePortlet</portlet-name>
+			<remoteable>true</remoteable>
+	...
+		</portlet>
+	...
+	</liferay-portlet-app>
+
+After editing your portlet's `liferay-portlet.xml` file, your custom portlet
+will appear in the list of portlets available when creating a WSRP producer.
+Congratulations! Now you can share all your portlets to end users using WSRP!
+
+Next, we'll learn how to remotely access Liferay services.
+
+## Remotely Accessing Liferay Services [](id=remotely-accessing-liferay-services-liferay-portal-6-2-user-guide-18-en)
 
 Liferay includes a utility called the *Service Builder* which is used to
 generate all of the low level code for accessing resources from the portal
-database. This utility is further explained in the [*Liferay Developer Guide*](http://www.liferay.com/documentation/liferay-portal/6.1/development) and
-in *Liferay in Action*, but it is mentioned here because of its feature which
-generates interfaces not only for Java code, but also for web services and
-JavaScript. This means that the method calls for storing and retrieving portal
-objects are all the same, and are generated in the same step.
+database. This utility is further explained in the [*Liferay Developer Guide*](http://www.liferay.com/documentation/liferay-portal/6.2/development) and
+in [*Liferay in Action*](http://manning.com/sezov), but it is mentioned here
+because of its feature which generates interfaces not only for Java code, but
+also for web services and JavaScript. This means that the method calls for
+storing and retrieving portal objects are all the same, and are generated in the
+same step.
 
-![Figure 18.x: Liferay SOA's first layer of security is its properties files.](../../images/liferay-soa-first-layer.png)
+![Figure 18.13: Liferay SOA's first layer of security is its properties files.](../../images/liferay-soa-first-layer.png)
 
 Because the actual method calls for retrieving data are the same regardless of
 how one gets access to those methods (i.e., locally or through web services),
 Liferay provides a consistent interface for accessing portal data that few other
 products can match. The actual interfaces for the various services are covered
-in the [*Liferay Developer Guide*](http://www.liferay.com/documentation/liferay-portal/6.1/development) and
-in *Liferay in Action*. Before these services can be used, administrators need
-to enable users to access these services remotely.
+in the [*Liferay Developer Guide*](http://www.liferay.com/documentation/liferay-portal/6.2/development) and
+in [*Liferay in Action*](http://manning.com/sezov). Before these services can be
+used, administrators need to enable users to access these services remotely.
 
 In the default `portal.properties` file, there is a section called **Main
 Servlet**. This section defines the security settings for all of the remote
@@ -980,7 +1261,7 @@ Spring Remoting Servlet, the JSON Tunnel Servlet, and the WebDAV servlet.
 
 By default, a user connecting from the same machine Liferay is running on can
 access remote services so long as that user has the permission to use those
-services in Liferay's permissions system. Of course, you are not really “remote”
+services in Liferay's permissions system. Of course, you are not really "remote"
 unless you are accessing services from a different machine. Liferay has two
 layers of security when it comes to accessing its services remotely. Without
 explicit rights to both layers, a remote exception will be thrown and access to
@@ -1011,7 +1292,7 @@ If the machine on which the batch job is running has the IP address
 Liferay's web services and pass in user credentials to be used to upload the
 documents.
 
-![Figure 18.x: Liferay SOA's second layer of security is its permissions system.](../../images/liferay-soa-second-layer.png)
+![Figure 18.14: Liferay SOA's second layer of security is its permissions system.](../../images/liferay-soa-second-layer.png)
 
 The second layer of security is Liferay's security model that it uses for every
 object in the portal. The user account that accesses the services remotely must
@@ -1044,11 +1325,13 @@ For example, to get Organization data using a user that has the ID of
 
     http://2:test@localhost:8080/tunnel-web/secure/axis/Portal_OrganizationService
 
-It is important to note here how *Password Policies* (covered in chapter 15) can
-be used in combination with this feature. If you are enforcing password policies
-on your users (requiring passwords to take a certain form, requiring users to
-change their passwords on a periodic basis, etc.), any administrative user
-account which accesses Liferay's web services in a batch job will have its
+It is important to note here how *Password Policies* (covered in this guide's
+chapter on [User
+Management](https://www.liferay.com/documentation/liferay-portal/6.2/user-guide/-/ai/management-liferay-portal-6-2-user-guide-16-en)
+can be used in combination with this feature. If you are enforcing password
+policies on your users (requiring passwords to take a certain form, requiring
+users to change their passwords on a periodic basis, etc.), any administrative
+user account which accesses Liferay's web services in a batch job will have its
 password expire too.
 
 To prevent this from happening, you can add a new password policy which does not
@@ -1064,12 +1347,32 @@ of two security checks:
 2.  The user ID being used must have permission to access the resources it
     attempts to access.
 
-### Accessing Liferay's WSDL
+### Accessing Liferay's JSON Web Services [](id=accessing-liferays-json-web-services-liferay-portal-6-2-user-guide-18-en)
+
+To see which Liferay service methods are registered and available for use via
+JSON web services, open your browser to the following address:
+
+    http://localhost:8080/api/jsonws
+
+The page lists the portal's registered and exposed service methods. Get each
+method's details by clicking the method name. You can view the full signature of
+each method, all its arguments, the exceptions that can be thrown, and its
+Javadoc! Using a simple form from within your browser, you can even invoke the
+service method for testing purposes.
+
+To list registered services on a plugin (e.g. a custom portlet), don't forget to
+use its context path in your URL:
+
+    http://localhost:8080/[plugin-context]/api/jsonws
+
+This lists the JSON Web Service API for the plugin. 
+
+### Accessing Liferay's WSDL [](id=accessing-liferays-wsdl-liferay-portal-6-2-user-guide-18-en)
 
 After configuring the security settings properly, your first step in obtaining
-access to remote web services is to access the WSDL. If you are on a browser on
-the same machine Liferay is running on, you can do this by accessing the
-following URL:
+access to Liferay's remote SOAP web services is to access the WSDL. If you are
+on a browser on the same machine Liferay is running on, you can do this by
+accessing the following URL:
 
     http://localhost:<port number\>/tunnel-web/axis
 
@@ -1101,11 +1404,10 @@ any language that supports it. You can either save the document to your local
 machine and then generate the client code that way, or use your tool to trigger
 Liferay to generate the document dynamically by using one of the URLs above. For
 further information about developing applications that take advantage of
-Liferay's remote services, please see the [*Liferay Developer
-Guide*](http://www.liferay.com/documentation/liferay-portal/6.1/development) or
-*Liferay in Action*.
+Liferay's remote services, please see the [*Liferay Developer Guide*](http://www.liferay.com/documentation/liferay-portal/6.2/development) or
+[*Liferay in Action*](http://manning.com/sezov).
 
-## Summary  
+## Summary [](id=summary-liferay-portal-6-2-user-guide-18-en)
 
 Liferay Portal is an easy environment to maintain. Backup procedures are simple
 and straightforward. Administrators have all the options they need to view and
